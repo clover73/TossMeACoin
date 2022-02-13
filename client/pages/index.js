@@ -10,7 +10,9 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main></main>
+      <main>
+        <p className="text-3xl font-bold underline">Hello Tailwind</p>
+      </main>
 
       <footer></footer>
     </div>
