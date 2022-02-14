@@ -3,7 +3,7 @@ const { ethers } = require('hardhat');
 async function main() {
   const TossMeACoinContract = await ethers.getContractFactory('TossMeACoin');
 
-  const deployedTossMeACoinContract = await TossMeACoinContract.deploy(10);
+  const deployedTossMeACoinContract = await TossMeACoinContract.deploy();
   await deployedTossMeACoinContract.deployed();
 
   console.log(
