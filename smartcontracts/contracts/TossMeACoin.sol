@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 contract TossMeACoin {
   uint256 public totalDonationsCount;
-  address owner;
 
   event CoinDonationEvent(address from, address to, uint amount, uint256 timestamp);
 
@@ -15,32 +14,18 @@ contract TossMeACoin {
     string message;
     uint256 timestamp;
   }
-  mapping(address => uint) public ReceiversBalance;
-  mapping(address => CoinDonation[]) public ReceiversDonations;
-
-  constructor () {
-    owner = msg.sender;
-  }
-
-  modifier onlyOwner() {
-    require(msg.sender == owner, "Only the contract's owner can call this function");
-    _;
-  }
+  mapping(address => CoinDonation[]) public DonationsSent;
+  mapping(address => CoinDonation[]) public DonationsReceived;
 
   function getDonationsCount() public view returns (uint256) {
     return totalDonationsCount;
   }
 
-  function getReceiverBalance(address _receiver) public view onlyOwner returns (uint) {
-    return ReceiversBalance[_receiver];
+  function getReceivedDonations() public view returns (CoinDonation[] memory){
+    return DonationsReceived[msg.sender];
   }
-
-  function getReceiverDonations(address _receiver) public view onlyOwner returns (CoinDonation[] memory){
-    return ReceiversDonations[_receiver];
-  }
-
-  function getReceiverDonationsCount(address _receiver) public view onlyOwner returns (uint){
-    return ReceiversDonations[_receiver].length;
+  function getSentDonations() public view returns (CoinDonation[] memory){
+    return DonationsSent[msg.sender];
   }
 
   function donateCoin(address payable _to, string memory _name, string memory _message) public payable {
@@ -49,7 +34,11 @@ contract TossMeACoin {
     require(success, "Sorry, failed to send a donation :(");
 
     totalDonationsCount += 1;
-    ReceiversDonations[_to].push(CoinDonation(msg.sender, _to, msg.value, _name, _message, block.timestamp));
+    
+    CoinDonation memory donation = CoinDonation(msg.sender, _to, msg.value, _name, _message, block.timestamp);
+
+    DonationsSent[msg.sender].push(donation);
+    DonationsReceived[_to].push(donation);
 
     emit CoinDonationEvent(msg.sender, _to, msg.value, block.timestamp);
   }

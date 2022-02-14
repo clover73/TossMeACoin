@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { ethers } = require('hardhat');
 
 describe('TossMeACoin', function () {
-  it('Should send a donation of ETH on the blockchain & store its content', async function () {
+  it('Should send a donation of ETH on the blockchain & store it', async function () {
     const TossMeACoinContract = await ethers.getContractFactory('TossMeACoin');
     const TossMeACoin = await TossMeACoinContract.deploy();
     await TossMeACoin.deployed();
@@ -19,14 +19,12 @@ describe('TossMeACoin', function () {
     );
     await sendAnDonation.wait();
 
-    const donationsArray = await TossMeACoin.getReceiverDonations(
-      receiver.address
-    );
-    console.log('Donation object: \n', donationsArray[0]);
+    const donationsSent = await TossMeACoin.connect(sender).getSentDonations();
+    const donationsReceived = await TossMeACoin.connect(
+      receiver
+    ).getReceivedDonations();
 
-    expect(ethers.utils.formatEther(donationsArray[0].amount)).to.equal(
-      ethers.utils.formatEther(amount)
-    );
+    expect(donationsSent[0].name).to.equal(donationsReceived[0].name);
     expect(await TossMeACoin.getDonationsCount()).to.equal(1);
   });
 });
