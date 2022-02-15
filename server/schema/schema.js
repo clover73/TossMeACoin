@@ -73,12 +73,10 @@ const Mutation = new GraphQLObjectType({
       type: CreatorType,
       args: {
         publicKey: { type: new GraphQLNonNull(GraphQLString) },
-        name: { type: new GraphQLNonNull(GraphQLString) },
       },
       resolve(parent, args) {
         let newCreator = new Creator({
           publicKey: args.publicKey,
-          name: args.name,
           createdAt: new Date(),
         });
 
