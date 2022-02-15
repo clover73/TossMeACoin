@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { useContext } from 'react';
-
 import { TMACContext } from '../context/TossMeACoinContext';
 
 const Home = () => {
@@ -28,7 +27,7 @@ const Home = () => {
           <div>
             <div>
               <h2>Your Donations</h2>
-              {sentDonations.length > 0 ? (
+              {sentDonations ? (
                 sentDonations.map((donation) => (
                   <div key={donation.timestamp}>
                     <p>Sent to {donation.addressTo}</p>
@@ -43,7 +42,7 @@ const Home = () => {
             </div>
             <div>
               <h2>Donations Received</h2>
-              {receivedDonations.length > 0 ? (
+              {receivedDonations ? (
                 receivedDonations.map((donation) => (
                   <div key={donation.timestamp}>
                     <p>Received from {donation.addressFrom}</p>
