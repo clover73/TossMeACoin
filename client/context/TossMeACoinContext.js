@@ -4,25 +4,12 @@ import { contractAddress, contractABI } from '../utils/constants';
 
 export const TMACContext = React.createContext();
 
-const { ethereum } = window;
-
-const getSmartContract = () => {
-  const provider = new ethers.provider.Web3Provider(ethereum);
-  const signer = provider.getSigner();
-
-  const TMACContract = new ethers.Contract(
-    contractAddress,
-    contractABI,
-    signer
-  );
-
-  return TMACContract.connect(signer);
-};
-
-const TMACContract = getSmartContract();
+const ethereum = null;
 
 export const TMACProvider = ({ children }) => {
   const [account, setAccount] = useState(null);
+  const [receivedDonations, setReceivedDonations] = useState(null);
+  const [sentDonations, setSentDonations] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const checkIfWalletIsConnected = async () => {
@@ -31,10 +18,27 @@ export const TMACProvider = ({ children }) => {
 
       const accounts = await ethereum.request({ method: 'eth_accounts' });
 
-      if (accounts.length) setAccount(accounts[0]);
+      if (accounts.length) {
+        setReceivedDonations(await getReceivedDonations());
+        setSentDonations(await getSentDonations());
+        setAccount(accounts[0]);
+      }
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const getSmartContract = () => {
+    const provider = new ethers.providers.Web3Provider(ethereum);
+    const signer = provider.getSigner();
+
+    const TMACContract = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      signer
+    );
+
+    return TMACContract.connect(signer);
   };
 
   const connectWallet = async () => {
@@ -45,7 +49,9 @@ export const TMACProvider = ({ children }) => {
         method: 'eth_requestAccounts',
       });
 
-      setCurrentAccount(accounts[0]);
+      setAccount(accounts[0]);
+      setReceivedDonations(await getReceivedDonations());
+      setSentDonations(await getSentDonations());
     } catch (error) {
       console.error(error);
     }
@@ -55,6 +61,7 @@ export const TMACProvider = ({ children }) => {
     try {
       if (!ethereum) return alert('Please install MetaMask!');
 
+      const TMACContract = getSmartContract();
       const receivedDonationsData = await TMACContract.getReceivedDonations();
 
       const receivedDonations = receivedDonationsData.map((donantion) => ({
@@ -77,6 +84,7 @@ export const TMACProvider = ({ children }) => {
     try {
       if (!ethereum) return alert('Please install MetaMask!');
 
+      const TMACContract = getSmartContract();
       const sentDonationsData = await TMACContract.getSentDonations();
 
       const sentDonations = sentDonationsData.map((donantion) => ({
@@ -103,7 +111,8 @@ export const TMACProvider = ({ children }) => {
 
       const parsedAmount = ethers.utils.parseEther(amount);
 
-      const donationHash = await TMACContract.sendDonation(to, name, message, {
+      const TMACContract = getSmartContract();
+      const donationHash = await TMACContract.donateCoin(to, name, message, {
         value: parsedAmount,
       });
 
@@ -118,19 +127,20 @@ export const TMACProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    ethereum = window.ethereum;
     checkIfWalletIsConnected();
   }, []);
 
   return (
     <TMACContext.Provider
-      value={
-        (account,
+      value={{
+        account,
         connectWallet,
-        getReceivedDonations,
-        getSentDonations,
+        receivedDonations,
+        sentDonations,
         sendDonation,
-        isLoading)
-      }
+        isLoading,
+      }}
     >
       {children}
     </TMACContext.Provider>

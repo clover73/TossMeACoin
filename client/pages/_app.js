@@ -13,13 +13,7 @@ const MyApp = ({ Component, pageProps }) => {
     <ApolloProvider client={client}>
       <TMACProvider>
         <nav>
-          <div>Logo</div>
-          <div>
-            <Link href="/creators">
-              <a>Explore creators</a>
-            </Link>
-            <a>Connect wallet</a>
-          </div>
+          <Link href="/">Home</Link>
         </nav>
         <Component {...pageProps} />{' '}
       </TMACProvider>
