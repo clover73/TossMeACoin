@@ -6,6 +6,36 @@ export const TMACContext = React.createContext();
 
 const ethereum = null;
 
+const checkDBData = async () => {
+  try {
+    const { data } = await client.query({
+      query: gql`
+        {
+          creator(publicKey: "${publicKey}") {
+            publicKey
+            createdAt
+          }
+        }`,
+    });
+    if (!data.creator) {
+      const result = await client.mutate({
+        mutation: gql`
+            mutation {
+              addCreator(publicKey: "${publicKey}") {
+                publicKey
+                createdAt
+              }
+            }`,
+      });
+      console.log(result.data);
+      console.log(`New data created ${result.data.addCreator}`);
+      setDBData(data.creator);
+    } else setDBData(data.creator);
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 export const TMACProvider = ({ children }) => {
   const [account, setAccount] = useState(null);
   const [receivedDonations, setReceivedDonations] = useState(null);
@@ -52,6 +82,7 @@ export const TMACProvider = ({ children }) => {
       setAccount(accounts[0]);
       setReceivedDonations(await getReceivedDonations());
       setSentDonations(await getSentDonations());
+      checkDBData();
     } catch (error) {
       console.error(error);
     }

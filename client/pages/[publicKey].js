@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { gql } from '@apollo/client';
 import { client } from './_app';
 
@@ -7,9 +7,38 @@ import { TMACContext } from '../context/TossMeACoinContext';
 const SupportPage = ({ publicKey, creator }) => {
   const { sendDonation } = useContext(TMACContext);
 
+  const [dbData, setDBData] = useState(null);
   const [name, setName] = useState('');
   const [msg, setMsg] = useState('');
   const [amount, setAmount] = useState('');
+
+  const checkDBData = async () => {
+    try {
+      const { data } = await client.query({
+        query: gql`
+        {
+          creator(publicKey: "${publicKey}") {
+            publicKey
+            name
+            bio
+            createdAt
+            avatarURL
+            bannerURL
+            Twitter
+            Instagram
+            YouTube
+            TikTok
+            LinkedIn
+            GitHub
+            Website
+          }
+        }`,
+      });
+      setDBData(data.creator);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,6 +51,10 @@ const SupportPage = ({ publicKey, creator }) => {
     };
     sendDonation(data);
   };
+
+  useEffect(() => {
+    checkDBData();
+  }, []);
 
   return (
     <div>
@@ -62,6 +95,8 @@ export default SupportPage;
 
 export async function getStaticProps({ params }) {
   const { publicKey } = params;
+
+  // TODO Check if a public key is valid
 
   const { data } = await client.query({
     query: gql`
