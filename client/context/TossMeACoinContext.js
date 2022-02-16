@@ -29,8 +29,7 @@ const checkDBData = async () => {
       });
       console.log(result.data);
       console.log(`New data created ${result.data.addCreator}`);
-      setDBData(data.creator);
-    } else setDBData(data.creator);
+    }
   } catch (error) {
     console.error(error.message);
   }

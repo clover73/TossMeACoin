@@ -12,7 +12,19 @@ const SupportPage = ({ publicKey, creator }) => {
   const [msg, setMsg] = useState('');
   const [amount, setAmount] = useState('');
 
-  const checkDBData = async () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const data = {
+      to: publicKey,
+      amount,
+      name,
+      message: msg,
+    };
+    sendDonation(data);
+  };
+
+  useEffect(() => {
     try {
       const { data } = await client.query({
         query: gql`
@@ -38,22 +50,6 @@ const SupportPage = ({ publicKey, creator }) => {
     } catch (error) {
       console.error(error.message);
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const data = {
-      to: publicKey,
-      amount,
-      name,
-      message: msg,
-    };
-    sendDonation(data);
-  };
-
-  useEffect(() => {
-    checkDBData();
   }, []);
 
   return (
