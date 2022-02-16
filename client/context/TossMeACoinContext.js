@@ -19,9 +19,9 @@ export const TMACProvider = ({ children }) => {
       const accounts = await ethereum.request({ method: 'eth_accounts' });
 
       if (accounts.length) {
+        setAccount(accounts[0]);
         setReceivedDonations(await getReceivedDonations());
         setSentDonations(await getSentDonations());
-        setAccount(accounts[0]);
       }
     } catch (error) {
       console.error(error);
