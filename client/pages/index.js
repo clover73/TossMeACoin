@@ -3,8 +3,7 @@ import { useContext } from 'react';
 import { TMACContext } from '../context/TossMeACoinContext';
 
 const Home = () => {
-  const { account, connectWallet, receivedDonations, sentDonations } =
-    useContext(TMACContext);
+  const { account, connectWallet } = useContext(TMACContext);
 
   return (
     <>
@@ -21,41 +20,6 @@ const Home = () => {
           <button type="button" onClick={connectWallet}>
             Connect wallet
           </button>
-        )}
-        <p className="text-3xl font-bold underline">Hello Tailwind</p>
-        {account && (
-          <div>
-            <div>
-              <h2>Your Donations</h2>
-              {sentDonations ? (
-                sentDonations.map((donation) => (
-                  <div key={donation.timestamp}>
-                    <p>Sent to {donation.addressTo}</p>
-                    <p>Amount {donation.amount}</p>
-                    <p>Name {donation.name}</p>
-                    <p>Message {donation.message}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No donations sent</p>
-              )}
-            </div>
-            <div>
-              <h2>Donations Received</h2>
-              {receivedDonations ? (
-                receivedDonations.map((donation) => (
-                  <div key={donation.timestamp}>
-                    <p>Received from {donation.addressFrom}</p>
-                    <p>Amount {donation.amount}</p>
-                    <p>Name {donation.name}</p>
-                    <p>Message {donation.message}</p>
-                  </div>
-                ))
-              ) : (
-                <p>No donations recived</p>
-              )}
-            </div>
-          </div>
         )}
       </main>
 

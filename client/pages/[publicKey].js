@@ -5,7 +5,13 @@ import { client } from './_app';
 import { TMACContext } from '../context/TossMeACoinContext';
 
 const SupportPage = ({ publicKey, creator }) => {
-  const { sendDonation } = useContext(TMACContext);
+  const {
+    sendDonation,
+    account,
+    connectWallet,
+    receivedDonations,
+    sentDonations,
+  } = useContext(TMACContext);
 
   const [dbData, setDBData] = useState(null);
   const [name, setName] = useState('');
@@ -24,7 +30,7 @@ const SupportPage = ({ publicKey, creator }) => {
     sendDonation(data);
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     try {
       const { data } = await client.query({
         query: gql`
@@ -81,8 +87,46 @@ const SupportPage = ({ publicKey, creator }) => {
             onChange={(e) => setAmount(e.target.value)}
           />
         </label>
-        <input type="submit" value="Send Donation" />
+        {account ? (
+          <input type="submit" value="Send Donation" />
+        ) : (
+          <button onClick={connectWallet}>Connect wallet</button>
+        )}
       </form>
+      {account && (
+        <div>
+          <div>
+            <h2>Your Donations</h2>
+            {sentDonations ? (
+              sentDonations.map((donation) => (
+                <div key={donation.timestamp}>
+                  <p>Sent to {donation.addressTo}</p>
+                  <p>Amount {donation.amount}</p>
+                  <p>Name {donation.name}</p>
+                  <p>Message {donation.message}</p>
+                </div>
+              ))
+            ) : (
+              <p>No donations sent</p>
+            )}
+          </div>
+          <div>
+            <h2>Donations Received</h2>
+            {receivedDonations ? (
+              receivedDonations.map((donation) => (
+                <div key={donation.timestamp}>
+                  <p>Received from {donation.addressFrom}</p>
+                  <p>Amount {donation.amount}</p>
+                  <p>Name {donation.name}</p>
+                  <p>Message {donation.message}</p>
+                </div>
+              ))
+            ) : (
+              <p>No donations recived</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
