@@ -94,14 +94,14 @@ export const TMACProvider = ({ children }) => {
       const TMACContract = getSmartContract();
       const receivedDonationsData = await TMACContract.getReceivedDonations();
 
-      const receivedDonations = receivedDonationsData.map((donantion) => ({
-        addressFrom: donantion.from,
-        addressTo: donantion.to,
-        amount: ethers.utils.formatEther(donantion.amount),
-        name: donantion.name,
-        message: donantion.message,
+      const receivedDonations = receivedDonationsData.map((donation) => ({
+        addressFrom: donation.from,
+        addressTo: donation.to,
+        amount: ethers.utils.formatEther(donation.amount),
+        name: donation.name,
+        message: donation.message,
         timestamp: new Date(
-          donantion.timestamp.toNumber() * 1000
+          donation.timestamp.toNumber() * 1000
         ).toLocaleString(),
       }));
 

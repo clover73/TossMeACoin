@@ -7,6 +7,7 @@ import { TMACContext } from '../context/TossMeACoinContext';
 const SupportPage = ({ publicKey, creator }) => {
   const {
     sendDonation,
+    isLoading,
     account,
     connectWallet,
     receivedDonations,
@@ -29,6 +30,14 @@ const SupportPage = ({ publicKey, creator }) => {
     };
     sendDonation(data);
   };
+
+  useEffect(() => {
+    if (isLoading) {
+      setName('');
+      setAmount(0);
+      setMsg('');
+    }
+  }, [isLoading]);
 
   useEffect(async () => {
     try {
@@ -88,7 +97,11 @@ const SupportPage = ({ publicKey, creator }) => {
           />
         </label>
         {account ? (
-          <input type="submit" value="Send Donation" />
+          isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <input type="submit" value="Send Donation" />
+          )
         ) : (
           <button onClick={connectWallet}>Connect wallet</button>
         )}
