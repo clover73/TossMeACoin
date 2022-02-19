@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { contractAddress, contractABI } from '../utils/constants';
+import { client } from '../pages/_app';
+import { gql } from '@apollo/client';
 
 export const TMACContext = React.createContext();
 
 const ethereum = null;
 
-const checkDBData = async () => {
+const checkDBData = async (publicKey) => {
   try {
     const { data } = await client.query({
       query: gql`
@@ -81,7 +83,7 @@ export const TMACProvider = ({ children }) => {
       setAccount(accounts[0]);
       setReceivedDonations(await getReceivedDonations());
       setSentDonations(await getSentDonations());
-      checkDBData();
+      checkDBData(accounts[0]);
     } catch (error) {
       console.error(error);
     }
