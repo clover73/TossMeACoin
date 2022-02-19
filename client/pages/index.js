@@ -1,7 +1,8 @@
 import Head from 'next/head';
+import Link from 'next/link';
 import { useContext } from 'react';
 import { TMACContext } from '../context/TossMeACoinContext';
-
+import Button from '../components/Button';
 const Home = () => {
   const { account, connectWallet } = useContext(TMACContext);
 
@@ -16,14 +17,43 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        {account ? (
-          <p>Connected account: {account}</p>
-        ) : (
-          <button type="button" onClick={connectWallet}>
-            Connect wallet
-          </button>
-        )}
+      <main className="flex items-center justify-center min-h-[80vh]">
+        <div className="max-w-6xl mx-auto py-16 px-2 sm:px-6 lg:px-8">
+          <div className="text-center color-[#262626] pb-12 md:pb-16">
+            <h1
+              className="text-5xl md:text-7xl font-extrabold leading-tighter tracking-tighter mb-4"
+              data-aos="zoom-y-out"
+            >
+              Toss Me A{' '}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5e17eb] to-[#c9e2a6]">
+                Coin
+              </span>
+            </h1>
+            <div className="max-w-3xl mx-auto">
+              <p
+                className="text-xl text-gray-600 mb-8"
+                data-aos="zoom-y-out"
+                data-aos-delay="150"
+              >
+                Web3 Decentralized Donation Platform Made For Content Creators
+              </p>
+              <div
+                className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center text-xl"
+                data-aos="zoom-y-out"
+                data-aos-delay="300"
+              >
+                {!account && (
+                  <div className="m-4">
+                    <Button onClick={connectWallet}>Connect wallet</Button>
+                  </div>
+                )}
+                <span className="bg-[#262626] hover:bg-[#000000] text-white font-bold py-2 px-4 rounded-full m-4 cursor-pointer">
+                  <Link href="/creators">Search creators</Link>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
 
       <footer></footer>
