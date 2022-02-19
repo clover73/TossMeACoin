@@ -1,10 +1,46 @@
 import Head from 'next/head';
-import Link from 'next/link';
-import { useContext } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useState } from 'react';
 import { TMACContext } from '../context/TossMeACoinContext';
+import { client } from '../pages/_app';
+import { gql } from '@apollo/client';
 import Button from '../components/Button';
+
 const Home = () => {
   const { account, connectWallet } = useContext(TMACContext);
+  const router = useRouter();
+  const [publicKey, setPublicKey] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = async (event) => {
+    const address = event.target.value;
+    setPublicKey(address);
+    if (error) setError('');
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const valid = publicKey.length == 42 && publicKey.substring(0, 2) == '0x';
+    if (!valid) setError('Please enter a valid ETH address!');
+    else {
+      try {
+        const { data } = await client.query({
+          query: gql`
+            {
+              creator(publicKey: "${publicKey.toLocaleLowerCase()}") {
+                createdAt
+              }
+            }`,
+        });
+        if (!data.creator)
+          setError('Sorry, this address has not registered on our platform :(');
+        else router.push(`/${publicKey}`);
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+  };
 
   return (
     <>
@@ -37,19 +73,33 @@ const Home = () => {
               >
                 Web3 Decentralized Donation Platform Made For Content Creators
               </p>
-              <div
-                className="max-w-xs mx-auto sm:max-w-none sm:flex sm:justify-center text-xl"
-                data-aos="zoom-y-out"
-                data-aos-delay="300"
-              >
-                {!account && (
+              <div className="w-4/5 mx-auto flex justify-center text-xl">
+                {!account ? (
                   <div className="m-4">
                     <Button onClick={connectWallet}>Connect wallet</Button>
                   </div>
+                ) : (
+                  <form onSubmit={handleSubmit}>
+                    <input
+                      type="text"
+                      name="publicKey"
+                      value={publicKey}
+                      onChange={handleChange}
+                      placeholder="Find by ETH Public Key"
+                      className="py-2 border-b-2 border-[#6666ff] outline-none focus:border-[#c9e2a6]"
+                    />
+                    <input
+                      type="Submit"
+                      defaultValue="Find creator"
+                      className="bg-[#262626] hover:bg-[#000000] text-white font-bold py-2 px-4 rounded-full m-2 cursor-pointer"
+                    />
+                    {error && (
+                      <p className="text-red-800 my-4 font-bold text-md">
+                        {error}
+                      </p>
+                    )}
+                  </form>
                 )}
-                <span className="bg-[#262626] hover:bg-[#000000] text-white font-bold py-2 px-4 rounded-full m-4 cursor-pointer">
-                  <Link href="/creators">Search creators</Link>
-                </span>
               </div>
             </div>
           </div>
