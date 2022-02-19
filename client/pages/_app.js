@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { TMACProvider } from '../context/TossMeACoinContext';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const token = Buffer.from(
   `${process.env.API_USER}:${process.env.PASSWORD}`,
@@ -21,7 +22,8 @@ const MyApp = ({ Component, pageProps }) => {
     <ApolloProvider client={client}>
       <TMACProvider>
         <Navbar />
-        <Component {...pageProps} />{' '}
+        <Component {...pageProps} />
+        <Footer />
       </TMACProvider>
     </ApolloProvider>
   );
