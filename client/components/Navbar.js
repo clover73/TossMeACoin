@@ -27,10 +27,12 @@ const Navbar = () => {
 
           <div>
             {account ? (
-              <div className="bg-[#5e17eb] text-white font-bold py-2 px-4 rounded-full">{`${account.substring(
-                0,
-                5
-              )}...${account.substring(36, 41)}`}</div>
+              <Link href={`/${account}`}>
+                <div className="bg-[#6666ff] hover:bg-[#5e17eb] text-white font-bold py-2 px-4 rounded-full cursor-pointer">{`${account.substring(
+                  0,
+                  5
+                )}...${account.substring(36, 41)}`}</div>
+              </Link>
             ) : (
               <Button onClick={connectWallet}>Connect wallet</Button>
             )}
