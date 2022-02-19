@@ -8,7 +8,7 @@ const Navbar = () => {
 
   return (
     <nav>
-      <div className="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 h-[10vh]">
         <div className="relative flex items-center justify-between h-16">
           <Link href="/">
             <div className="flex-shrink-0 flex items-center">
