@@ -1,7 +1,7 @@
 import '../styles/globals.css';
-import Link from 'next/link';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { TMACProvider } from '../context/TossMeACoinContext';
+import Navbar from '../components/Navbar';
 
 const token = Buffer.from(
   `${process.env.API_USER}:${process.env.PASSWORD}`,
@@ -20,9 +20,7 @@ const MyApp = ({ Component, pageProps }) => {
   return (
     <ApolloProvider client={client}>
       <TMACProvider>
-        <nav>
-          <Link href="/">Home</Link>
-        </nav>
+        <Navbar />
         <Component {...pageProps} />{' '}
       </TMACProvider>
     </ApolloProvider>
