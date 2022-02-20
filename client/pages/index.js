@@ -1,13 +1,10 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
-import { TMACContext } from '../context/TossMeACoinContext';
+import { useState } from 'react';
 import { client } from '../pages/_app';
 import { gql } from '@apollo/client';
-import Button from '../components/Button';
 
 const Home = () => {
-  const { account, connectWallet } = useContext(TMACContext);
   const router = useRouter();
   const [publicKey, setPublicKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
