@@ -42,6 +42,7 @@ export const TMACProvider = ({ children }) => {
   const [receivedDonations, setReceivedDonations] = useState(null);
   const [sentDonations, setSentDonations] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -119,14 +120,14 @@ export const TMACProvider = ({ children }) => {
       const TMACContract = getSmartContract();
       const sentDonationsData = await TMACContract.getSentDonations();
 
-      const sentDonations = sentDonationsData.map((donantion) => ({
-        addressFrom: donantion.from,
-        addressTo: donantion.to,
-        amount: ethers.utils.formatEther(donantion.amount),
-        name: donantion.name,
-        message: donantion.message,
+      const sentDonations = sentDonationsData.map((donation) => ({
+        addressFrom: donation.from,
+        addressTo: donation.to,
+        amount: ethers.utils.formatEther(donation.amount),
+        name: donation.name,
+        message: donation.message,
         timestamp: new Date(
-          donantion.timestamp.toNumber() * 1000
+          donation.timestamp.toNumber() * 1000
         ).toLocaleString(),
       }));
 
@@ -141,6 +142,8 @@ export const TMACProvider = ({ children }) => {
 
       const { to, amount, name, message } = donationData;
 
+      setIsLoading(true);
+
       const parsedAmount = ethers.utils.parseEther(amount);
 
       const TMACContract = getSmartContract();
@@ -148,11 +151,14 @@ export const TMACProvider = ({ children }) => {
         value: parsedAmount,
       });
 
-      setIsLoading(true);
       console.log(`Loading - ${donationHash.hash}`);
       await donationHash.wait();
       console.log(`Success - ${donationHash.hash}`);
       setIsLoading(false);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+      }, 5000);
     } catch (error) {
       console.error(error);
     }
@@ -168,6 +174,7 @@ export const TMACProvider = ({ children }) => {
       value={{
         account,
         connectWallet,
+        success,
         receivedDonations,
         sentDonations,
         sendDonation,
