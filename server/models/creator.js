@@ -7,14 +7,7 @@ const creatorSchema = new Schema({
   bio: String,
   createdAt: Date,
   avatarURL: String,
-  bannerURL: String,
-  Twitter: String,
-  Instagram: String,
-  YouTube: String,
-  TikTok: String,
-  LinkedIn: String,
-  GitHub: String,
-  Website: String,
+  customLink: String,
 });
 
 module.exports = mongoose.model('Creator', creatorSchema);

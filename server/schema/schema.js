@@ -34,14 +34,7 @@ const CreatorType = new GraphQLObjectType({
     bio: { type: GraphQLString },
     createdAt: { type: DateType },
     avatarURL: { type: GraphQLString },
-    bannerURL: { type: GraphQLString },
-    Twitter: { type: GraphQLString },
-    Instagram: { type: GraphQLString },
-    YouTube: { type: GraphQLString },
-    TikTok: { type: GraphQLString },
-    LinkedIn: { type: GraphQLString },
-    GitHub: { type: GraphQLString },
-    Website: { type: GraphQLString },
+    customLink: { type: GraphQLString },
   }),
 });
 
@@ -90,14 +83,7 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLString },
         bio: { type: GraphQLString },
         avatarURL: { type: GraphQLString },
-        bannerURL: { type: GraphQLString },
-        Twitter: { type: GraphQLString },
-        Instagram: { type: GraphQLString },
-        YouTube: { type: GraphQLString },
-        TikTok: { type: GraphQLString },
-        LinkedIn: { type: GraphQLString },
-        GitHub: { type: GraphQLString },
-        Website: { type: GraphQLString },
+        customLink: { type: GraphQLString },
       },
       async resolve(parent, args) {
         const creator = await Creator.findOne({ publicKey: args.publicKey });
@@ -107,14 +93,7 @@ const Mutation = new GraphQLObjectType({
         if (args.name !== undefined) creator.name = args.name;
         if (args.bio !== undefined) creator.bio = args.bio;
         if (args.avatarURL !== undefined) creator.avatarURL = args.avatarURL;
-        if (args.bannerURL !== undefined) creator.bannerURL = args.bannerURL;
-        if (args.Twitter !== undefined) creator.Twitter = args.Twitter;
-        if (args.Instagram !== undefined) creator.Instagram = args.Instagram;
-        if (args.YouTube !== undefined) creator.YouTube = args.YouTube;
-        if (args.TikTok !== undefined) creator.TikTok = args.TikTok;
-        if (args.LinkedIn !== undefined) creator.LinkedIn = args.LinkedIn;
-        if (args.GitHub !== undefined) creator.GitHub = args.GitHub;
-        if (args.Website !== undefined) creator.Website = args.Website;
+        if (args.customLink !== undefined) creator.customLink = args.customLink;
 
         return creator.save();
       },
