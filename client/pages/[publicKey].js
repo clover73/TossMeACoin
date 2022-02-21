@@ -2,8 +2,9 @@ import Head from 'next/head';
 import { useState, useContext, useEffect } from 'react';
 import { gql } from '@apollo/client';
 import { client } from './_app';
-import Button from '../components/Button';
 import { TMACContext } from '../context/TossMeACoinContext';
+import DonationCard from '../components/DonationCard';
+import Button from '../components/Button';
 
 import { FaCalendar } from 'react-icons/fa';
 
@@ -160,32 +161,26 @@ const SupportPage = ({ publicKey, creator }) => {
               </form>
             </div>
             {isLoggedIn && (
-              <div className="mt-4">
-                <div>
-                  <h2>Your Donations</h2>
+              <div className="max-w-xl color-[#262626] pb-12 md:pb-16 mt-6">
+                <div className="w-full mx-auto text-xl p-6 mb-12 rounded shadow-2xl">
+                  <h2 className="font-bold text-4xl md:text-5xl my-4">
+                    Your Donations
+                  </h2>
                   {sentDonations && sentDonations.length != 0 ? (
                     sentDonations.map((donation) => (
-                      <div key={donation.timestamp}>
-                        <p>Sent to {donation.addressTo}</p>
-                        <p>Amount {donation.amount}</p>
-                        <p>Name {donation.name}</p>
-                        <p>Message {donation.message}</p>
-                      </div>
+                      <DonationCard donation={donation} address={publicKey} />
                     ))
                   ) : (
                     <p>No donations sent</p>
                   )}
                 </div>
-                <div>
-                  <h2>Donations Received</h2>
+                <div className="w-full mx-auto text-xl p-6 rounded shadow-2xl">
+                  <h2 className="font-bold text-4xl md:text-5xl my-4">
+                    Donations Received
+                  </h2>
                   {receivedDonations && receivedDonations.length != 0 ? (
                     receivedDonations.map((donation) => (
-                      <div key={donation.timestamp}>
-                        <p>Received from {donation.addressFrom}</p>
-                        <p>Amount {donation.amount}</p>
-                        <p>Name {donation.name}</p>
-                        <p>Message {donation.message}</p>
-                      </div>
+                      <DonationCard donation={donation} address={publicKey} />
                     ))
                   ) : (
                     <p>No donations received</p>
