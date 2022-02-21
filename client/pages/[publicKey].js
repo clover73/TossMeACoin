@@ -3,10 +3,12 @@ import { useState, useContext, useEffect } from 'react';
 import { gql } from '@apollo/client';
 import { client } from './_app';
 import { TMACContext } from '../context/TossMeACoinContext';
+import EditProfile from '../components/EditProfile';
+import ProfileInfo from '../components/ProfileInfo';
 import DonationCard from '../components/DonationCard';
 import Button from '../components/Button';
 
-import { FaCalendar } from 'react-icons/fa';
+import { FaWrench } from 'react-icons/fa';
 
 const SupportPage = ({ publicKey, creator }) => {
   if (!creator) {
@@ -34,6 +36,7 @@ const SupportPage = ({ publicKey, creator }) => {
     sentDonations,
   } = useContext(TMACContext);
 
+  const [edit, setEdit] = useState(false);
   const [name, setName] = useState('');
   const [msg, setMsg] = useState('');
   const [amount, setAmount] = useState('');
@@ -59,8 +62,6 @@ const SupportPage = ({ publicKey, creator }) => {
     }
   }, [isLoading]);
 
-  const date = new Date(creator.createdAt);
-
   return (
     <>
       <Head>
@@ -71,28 +72,22 @@ const SupportPage = ({ publicKey, creator }) => {
         <div className="max-w-xl color-[#262626] pb-12 md:pb-16">
           <div className="text-center mx-auto">
             <div className="w-full text-center mx-auto p-6 my-4 rounded shadow-2xl">
-              <div className="my-2">
-                <div className="w-36 h-36 mx-auto">
-                  <img
-                    className="rounded-full shadow-sm"
-                    src={creator.avatarURL ? creator.avatarURL : 'Avatar.png'}
-                    alt="User avatar"
-                  />
-                </div>
-                <h1 className="font-bold text-4xl md:text-5xl my-4">
-                  {creator.name ? creator.name : 'Username'}
-                </h1>
-                <p className="text-md md:text-xl m-2">
-                  {creator.bio ? creator.bio : 'User has not entered his bio'}
-                </p>
-                <p className="text-xs md:text-sm shadow-sm text-[#c9e2a6] break-all py-2 px-4 rounded-full bg-[#262626] md:text-md font-bold">
-                  {publicKey}
-                </p>
-                <p className="mt-4">
-                  Joined at {date.toLocaleDateString()}{' '}
-                  <FaCalendar className="inline align-text-top" />
-                </p>
-              </div>
+              {isLoggedIn && edit ? (
+                <EditProfile creator={creator} publicKey={publicKey} />
+              ) : (
+                <ProfileInfo creator={creator} publicKey={publicKey} />
+              )}
+              {isLoggedIn && !edit ? (
+                <Button
+                  onClick={() => {
+                    setEdit(true);
+                  }}
+                >
+                  Edit profile <FaWrench className="inline align-text-top" />
+                </Button>
+              ) : (
+                <></>
+              )}
             </div>
             <div className="w-full text-left mx-auto text-xl p-6 rounded shadow-2xl">
               <form onSubmit={handleSubmit}>
@@ -217,14 +212,7 @@ export async function getStaticProps({ params }) {
         bio
         createdAt
         avatarURL
-        bannerURL
-        Twitter
-        Instagram
-        YouTube
-        TikTok
-        LinkedIn
-        GitHub
-        Website
+        customLink
       }
     }`,
   });
