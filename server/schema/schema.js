@@ -73,6 +73,8 @@ const Mutation = new GraphQLObjectType({
           createdAt: new Date(),
         });
 
+        console.log('Adding creator', args);
+
         return newCreator.save();
       },
     },
@@ -94,6 +96,8 @@ const Mutation = new GraphQLObjectType({
         if (args.bio !== undefined) creator.bio = args.bio;
         if (args.avatarURL !== undefined) creator.avatarURL = args.avatarURL;
         if (args.customLink !== undefined) creator.customLink = args.customLink;
+
+        console.log('Updating creator', args);
 
         return creator.save();
       },
