@@ -29,12 +29,31 @@ const checkDBData = async (publicKey) => {
               }
             }`,
       });
+      console.log(`Data created ${result.data.addCreator}`);
       console.log(result.data);
-      console.log(`New data created ${result.data.addCreator}`);
     }
   } catch (error) {
     console.error(error.message);
   }
+};
+
+const saveToDB = async (data) => {
+  try {
+    const result = await client.mutate({
+      mutation: gql`
+        mutation {
+          updateCreator(publicKey: "${data.publicKey}", name: "${data.name}", bio: "${data.bio}", customLink: "${data.customLink}") {
+            publicKey
+            name
+            bio
+            customLink
+            createdAt
+          }
+        }`,
+    });
+    console.log(`Data updated`);
+    console.log(result.data);
+  } catch (error) {}
 };
 
 export const TMACProvider = ({ children }) => {
@@ -178,6 +197,7 @@ export const TMACProvider = ({ children }) => {
         receivedDonations,
         sentDonations,
         sendDonation,
+        saveToDB,
         isLoading,
       }}
     >
