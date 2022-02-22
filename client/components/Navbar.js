@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { useContext } from 'react';
 import { TMACContext } from '../context/TossMeACoinContext';
 import Button from './Button';
@@ -12,16 +13,22 @@ const Navbar = () => {
         <div className="relative flex items-center justify-between h-16">
           <Link href="/">
             <div className="flex-shrink-0 flex items-center">
-              <img
-                className="hidden sm:block h-16 w-auto cursor-pointer"
-                src="/logo.svg"
-                alt="Toss Me A Coins"
-              />
-              <img
-                className="block sm:hidden h-16 w-auto cursor-pointer"
-                src="/logoSmall.svg"
-                alt="Toss Me A Coins"
-              />
+              <div className="hidden sm:block h-16 w-32 w-auto cursor-pointer">
+                <Image
+                  src="/Logo.svg"
+                  alt="Toss Me A Coins"
+                  width="240"
+                  height="64"
+                />
+              </div>
+              <div className="block sm:hidden h-16 w-32 w-auto cursor-pointer">
+                <Image
+                  src="/LogoSmall.svg"
+                  alt="Toss Me A Coins"
+                  width="64"
+                  height="64"
+                />
+              </div>
             </div>
           </Link>
 
