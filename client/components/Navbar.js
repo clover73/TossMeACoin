@@ -11,7 +11,7 @@ const Navbar = () => {
     <nav>
       <div className="max-w-6xl mx-auto px-2 sm:px-6 lg:px-8 h-[10vh]">
         <div className="relative flex items-center justify-between h-16">
-          <Link href="/">
+          <Link href="/" passHref>
             <div className="flex-shrink-0 flex items-center">
               <div className="hidden sm:block h-16 w-32 w-auto cursor-pointer">
                 <Image
@@ -34,7 +34,7 @@ const Navbar = () => {
 
           <div>
             {account ? (
-              <Link href={`/${account}`}>
+              <Link href={`/${account}`} passHref>
                 <div className="bg-[#6666ff] hover:bg-[#5e17eb] text-white font-bold py-2 px-4 rounded-full cursor-pointer">{`${account.substring(
                   0,
                   5

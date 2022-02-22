@@ -10,22 +10,7 @@ import Button from '../components/Button';
 
 import { FaWrench } from 'react-icons/fa';
 
-const SupportPage = ({ publicKey, creator }) => {
-  if (!creator) {
-    return (
-      <>
-        <Head>
-          <title>Address has not been registered!</title>
-        </Head>
-        <main className="flex items-center justify-center min-h-[80vh] m-4">
-          <h1 className="text-5xl md:text-7xl text-center font-extrabold leading-tighter tracking-tighter mb-4">
-            Sorry but this address hasn't registered on our platform!
-          </h1>
-        </main>
-      </>
-    );
-  }
-
+const SupportPage = ({ publicKey }) => {
   const {
     sendDonation,
     isLoading,
@@ -36,11 +21,49 @@ const SupportPage = ({ publicKey, creator }) => {
     sentDonations,
   } = useContext(TMACContext);
 
+  const isLoggedIn = account == publicKey.toLocaleLowerCase();
+
+  const [creator, setCreator] = useState({ name: 'Username' });
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState('');
   const [msg, setMsg] = useState('');
   const [amount, setAmount] = useState('');
-  const isLoggedIn = account == publicKey.toLocaleLowerCase();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data } = await client.query({
+        query: gql`
+        {
+          creator(publicKey: "${publicKey.toLocaleLowerCase()}") {
+            name
+            bio
+            createdAt
+            customLink
+          }
+        }`,
+      });
+      if (data.creator) {
+        setCreator({
+          name: data.creator.name,
+          bio: data.creator.bio,
+          avatarURL: data.creator.avatarURL,
+          customLink: data.creator.customLink,
+          createdAt: data.creator.createdAt,
+        });
+      } else {
+        isCreator = true;
+      }
+    };
+    fetchData();
+  }, [publicKey]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setName('');
+      setAmount(0);
+      setMsg('');
+    }
+  }, [isLoading]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,14 +77,20 @@ const SupportPage = ({ publicKey, creator }) => {
     sendDonation(data);
   };
 
-  useEffect(() => {
-    if (isLoading) {
-      setName('');
-      setAmount(0);
-      setMsg('');
-    }
-  }, [isLoading]);
-
+  if (!creator) {
+    return (
+      <>
+        <Head>
+          <title>Address has not been registered!</title>
+        </Head>
+        <main className="flex items-center justify-center min-h-[80vh] m-4">
+          <h1 className="text-5xl md:text-7xl text-center font-extrabold leading-tighter tracking-tighter mb-4">
+            Sorry but this address hasn&apos;t registered on our platform!
+          </h1>
+        </main>
+      </>
+    );
+  }
   return (
     <>
       <Head>
@@ -163,7 +192,11 @@ const SupportPage = ({ publicKey, creator }) => {
                   </h2>
                   {sentDonations && sentDonations.length != 0 ? (
                     sentDonations.map((donation) => (
-                      <DonationCard donation={donation} address={publicKey} />
+                      <DonationCard
+                        donation={donation}
+                        address={publicKey}
+                        key={donation.timestamp}
+                      />
                     ))
                   ) : (
                     <p>No donations sent</p>
@@ -175,7 +208,11 @@ const SupportPage = ({ publicKey, creator }) => {
                   </h2>
                   {receivedDonations && receivedDonations.length != 0 ? (
                     receivedDonations.map((donation) => (
-                      <DonationCard donation={donation} address={publicKey} />
+                      <DonationCard
+                        donation={donation}
+                        address={publicKey}
+                        key={donation.timestamp}
+                      />
                     ))
                   ) : (
                     <p>No donations received</p>
@@ -195,7 +232,6 @@ export default SupportPage;
 export async function getStaticProps({ params }) {
   const { publicKey } = params;
 
-  // TODO Check if a public key is valid
   const valid = publicKey.length == 42 && publicKey.substring(0, 2) == '0x';
 
   if (!valid) {
@@ -204,25 +240,10 @@ export async function getStaticProps({ params }) {
     };
   }
 
-  const { data } = await client.query({
-    query: gql`
-    {
-      creator(publicKey: "${publicKey.toLocaleLowerCase()}") {
-        name
-        bio
-        createdAt
-        avatarURL
-        customLink
-      }
-    }`,
-  });
-
   return {
     props: {
       publicKey,
-      creator: data.creator,
     },
-    revalidate: 10,
   };
 }
 

@@ -6,6 +6,7 @@ const Footer = () => {
         <a
           href="https://github.com/0xChrisJones"
           target="_blank"
+          rel="noreferrer"
           className="bg-clip-text text-transparent bg-gradient-to-r from-[#5e17eb] to-[#c9e2a6] cursor-pointer"
         >
           0xChrisJones
