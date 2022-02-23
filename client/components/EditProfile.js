@@ -10,7 +10,7 @@ const EditProfile = ({ creator, publicKey }) => {
   const { saveToDB } = useContext(TMACContext);
   const date = new Date(creator.createdAt);
   const router = useRouter();
-
+  // TODO Add NFT Avatar selection
   const [username, setUsername] = useState(creator.name ? creator.name : '');
   const [bio, setBio] = useState(creator.bio ? creator.bio : '');
   const [link, setLink] = useState(
